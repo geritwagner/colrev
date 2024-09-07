@@ -326,6 +326,21 @@ class Prescreen(colrev.process.operation.Operation):
     def main(self, *, split_str: str = "NA") -> None:
         """Prescreen records (main entrypoint)"""
 
+        if self.review_manager.settings.prescreen.explanation == "":
+            print(
+                f"\n{Colors.ORANGE}Provide a short explanation of the prescreen{Colors.END} "
+                "(why should particular papers be included?):"
+            )
+            print(
+                'Example objective: "Include papers that focus on digital technology."'
+            )
+            self.review_manager.settings.prescreen.explanation = input("")
+            self.review_manager.save_settings()
+        else:
+            print("\nIn the prescreen, the following process is followed:\n")
+            print("   " + self.review_manager.settings.prescreen.explanation)
+            print()
+
         # pylint: disable=duplicate-code
         split = []
         if split_str != "NA":
