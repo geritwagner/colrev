@@ -53,11 +53,11 @@ class RecordsVariableNamingConventionChecker(checkers.BaseChecker):
                         if node.targets[0].name != "records_headers":
                             self.add_message(self.name, node=node)
                     else:
-                        if node.targets[0].name != "records":
+                        if not node.targets[0].name.endswith("records"):
                             self.add_message(self.name, node=node)
                     return
 
-        if node.targets[0].name != "records":
+        if not node.targets[0].name.endswith("records"):
             self.add_message(self.name, node=node)
 
 

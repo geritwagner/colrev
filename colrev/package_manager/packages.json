@@ -280,5 +280,8 @@
     },
     "colrev.plos": {
         "dev_status": "experimental"
+    },
+    "colrev.importer": {
+        "dev_status": "experimental"
     }
 }

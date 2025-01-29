@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "colrev.importer"
+description = "Package facilitating the import of literature review data from other projects"
+version = "0.1.0"
+license = "MIT"
+authors = ["Gerit Wagner <gerit.wagner@uni-bamberg.de>"]
+repository = "https://github.com/CoLRev-Environment/colrev/tree/main/colrev/packages/"
+
+[tool.poetry.scripts]
+colrev-importer = "colrev.packages.importer.src.importer:main"
+
+[[tool.poetry.packages]]
+include = "src"
+
+[tool.poetry.dependencies]
+python = ">=3.8, <4"
+bib-dedupe = "^0.7.6"
+
+[tool.colrev]
+colrev_doc_description = "TODO"
+colrev_doc_link = "docs/README.md"
+search_types = []
+
+[tool.poetry.plugins.colrev]
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "cython<3.0"]
+build-backend = "poetry.core.masonry.api"
