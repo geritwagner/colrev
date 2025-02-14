@@ -9,7 +9,6 @@ from urllib.parse import urlparse
 
 import feedparser
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -27,8 +26,7 @@ from colrev.packages.arxiv.src import record_transformer
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class ArXivSource:
+class ArXivSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """arXiv"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

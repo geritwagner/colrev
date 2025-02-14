@@ -8,7 +8,6 @@ from dataclasses import asdict
 from pathlib import Path
 
 import pandas as pd
-import zope.interface
 from git.exc import GitCommandError
 from pydantic import BaseModel
 from pydantic import Field
@@ -49,8 +48,7 @@ class StructuredDataSettings(BaseModel):
     }
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.DataInterface)
-class StructuredData:
+class StructuredData(colrev.package_manager.interfaces.DataInterface):
     """Summarize the literature in a structured data extraction (a table)"""
 
     settings: StructuredDataSettings

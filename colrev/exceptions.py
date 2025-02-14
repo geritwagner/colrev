@@ -31,7 +31,10 @@ class RepoSetupError(CoLRevException):
         if msg:
             self.message = f" {msg}"
         elif any(Path(Path.cwd()).iterdir()):
-            self.message = "Not a CoLRev repository containing the required files (settings.json, etc.)."
+            self.message = (
+                "Not a CoLRev repository containing the required files "
+                "(settings.json, etc.)."
+            )
 
         else:
             self.message = (

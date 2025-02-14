@@ -2,7 +2,6 @@
 """Adding of journal rankings to metadata"""
 from __future__ import annotations
 
-import zope.interface
 from pydantic import Field
 
 import colrev.env.local_index
@@ -15,8 +14,7 @@ from colrev.constants import Fields
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class AddJournalRanking:
+class AddJournalRanking(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records based on journal rankings"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

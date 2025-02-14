@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.env.local_index
@@ -21,8 +20,7 @@ from colrev.packages.crossref.src import crossref_api
 # pylint: disable=too-many-instance-attributes
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class YearVolIssPrep:
+class YearVolIssPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records based on year-volume-issue dependency"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

@@ -8,7 +8,6 @@ from pathlib import Path
 
 import pymupdf
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.env.local_index
@@ -35,8 +34,7 @@ from colrev.writer.write_utils import write_file
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class FilesSearchSource:
+class FilesSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Files directories (PDFs based on GROBID)"""
 
     # pylint: disable=too-many-instance-attributes

@@ -2,300 +2,237 @@
 """Package interfaces."""
 from __future__ import annotations
 
+import abc
 import typing
+from abc import ABC
+from abc import abstractmethod
 from pathlib import Path
+from typing import Type
 
-import zope.interface
-
+import colrev.package_manager.package_settings
 from colrev.constants import EndpointType
+from colrev.constants import SearchSourceHeuristicStatus
+from colrev.constants import SearchType
 
 if typing.TYPE_CHECKING:  # pragma: no cover
     import colrev.process.operation
     import colrev.record.record
     import colrev.settings
-    from colrev.constants import SearchSourceHeuristicStatus
 
 # pylint: disable=too-many-ancestors
 
+# TODO: ci_supported
+# # pylint: disable=too-few-public-methods
+# class GeneralInterface(zope.interface.Interface):  # pylint: disable=inherit-non-class
+#     """The General Interface for all package endpoints
 
-# pylint: disable=too-few-public-methods
-class GeneralInterface(zope.interface.Interface):  # pylint: disable=inherit-non-class
-    """The General Interface for all package endpoints
+#     Each package endpoint must implement the following attributes (methods)"""
 
-    Each package endpoint must implement the following attributes (methods)"""
-
-    ci_supported = zope.interface.Attribute(
-        """Flag indicating whether the package can be run in
-        continuous integration environments (e.g. GitHub Actions)"""
-    )
+#     ci_supported = zope.interface.Attribute(
+#         """Flag indicating whether the package can be run in
+#         continuous integration environments (e.g. GitHub Actions)"""
+#     )
 
 
-# pylint: disable=too-few-public-methods
-class ReviewTypeInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for ReviewTypes"""
+class ReviewTypeInterface(abc.ABC):
+    """The ReviewTypeInterface interface for ReviewTypes"""
 
-    # pylint: disable=no-self-argument
-    def initialize(settings: dict) -> dict:  # type: ignore
+    @abc.abstractmethod
+    def __init__(self, ci_supported: bool):
         """Initialize the review type"""
-        return settings  # pragma: no cover
+
+    @abc.abstractmethod
+    def initialize(self, settings: colrev.settings.Settings) -> dict:
+        """Initialize the review type"""
 
 
-class SearchSourceInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for SearchSources
+# TODO: query-parsing interface?
+# class... .parse(query_str) -> Query ; serialize(query) -> str;
 
-    How the CLI-commands call the methods:
 
-    `colrev search -a ...`: calls `add_endpoint()` and `search()`
+class APISearchInterface(abc.ABC):  # pylint: disable=inherit-non-class
+    """The PackageEndpoint abstract base class for API-search operations"""
 
-    `colrev search`: calls `search()` again to update the search,
-    using the saved search-parameters.
-
-    `colrev load`: calls the `load()` method
-
-    `colrev prep`: calls the `prepare()` method and the
-    `prep_link_md()` method (depending on the settings).
-
-    To implement a new SearchSource, it is recommended to start with
-    the `add_endpoint()`, and then proceed with the `search()`, `load()`,
-    and `prepare()` methods.
-    """
-
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
-    source_identifier = zope.interface.Attribute(
-        """Source identifier for search and provenance
-        Retrieved records are identified through the source_identifier
-        when they are added to/updated in the SearchAPIFeed"""
-    )
-    search_types = zope.interface.Attribute(
-        """SearchTypes attribute associated with the SearchSource"""
-    )
-
-    heuristic_status: SearchSourceHeuristicStatus = zope.interface.Attribute(
-        """The status of the SearchSource heuristic"""
-    )
+    query = ""
+    # TODO : depends on "last_updated" in crossref. -> maybe use a "run_since ..." field?
+    # Flag indicating whether to rerun the query
+    rerun = False
 
     # pylint: disable=no-self-argument
-    def heuristic(filename: Path, data: str):  # type: ignore
-        """Heuristic to identify to which SearchSource a search file belongs (needed for DB searches only).
+    def search() -> dict:  # type: ignore
+        """Run the API-search"""
 
-        When users save a search results file from a database in the `data/search/` directory,
-        they can run `colrev search` (without specifying where the search results file comes from).
-        The search operation will use the `heuristic()` method of all available SearchSources
-        to identify the database and thereby make it more convenient for users to enter the details.
-        """
 
-    # pylint: disable=no-self-argument
-    def add_endpoint(  # type: ignore
-        operation: colrev.process.operation.Operation,
-        params: str,
+class SearchSourceInterface(ABC):
+    """The PackageEndpoint abstract base class for SearchSources"""
+
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSourceSettings]
+    source_identifier: str
+    search_types: list[SearchType]
+    heuristic_status: SearchSourceHeuristicStatus
+    search_source: colrev.package_manager.package_settings.DefaultSourceSettings
+
+    @classmethod
+    @abstractmethod
+    def heuristic(cls, filename: Path, data: str) -> dict:
+        """Heuristic to identify which SearchSource a search file belongs to."""
+
+    @classmethod
+    @abstractmethod
+    def add_endpoint(
+        cls, operation: colrev.ops.search.Search, params: str
     ) -> colrev.settings.SearchSource:
-        """Add the SearchSource as an endpoint.
+        """Add the SearchSource as an endpoint."""
 
-        The parameters (`params`) can either be provided with the command (`colrev search -a ...`)
-        or they can be entered interactively.
-        """
+    @abstractmethod
+    def search(self, rerun: bool) -> None:
+        """Run a search of the SearchSource."""
 
-    # pylint: disable=no-self-argument
-    def search(rerun: bool) -> None:  # type: ignore
-        """Run a search of the SearchSource"""
-
-    # pylint: disable=no-self-argument
-    def prep_link_md(  # type: ignore
+    @abstractmethod
+    def prep_link_md(
+        self,
         prep_operation: colrev.ops.prep.Prep,
         record: colrev.record.record.Record,
         save_feed: bool = True,
         timeout: int = 10,
-    ):
-        """Retrieve masterdata from the SearchSource (only required when implementing an MD SerchSource)"""
+    ) -> colrev.record.record.Record:
+        """Retrieve masterdata from the SearchSource."""
 
-    # pylint: disable=no-self-argument
-    def load(  # type: ignore
-        load_operation: colrev.ops.load.Load,
-    ) -> dict:
-        """Load records from the SearchSource (and convert to .bib)"""
+    @abstractmethod
+    def load(self, load_operation: colrev.ops.load.Load) -> dict:
+        """Load records from the SearchSource."""
 
-    # pylint: disable=no-self-argument
-    def prepare(record: dict, source: colrev.settings.SearchSource) -> None:  # type: ignore
-        """Run the custom source-prep operation"""
-
-
-# pylint: disable=too-few-public-methods
-class PrepInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for prep operations"""
-
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
-    source_correction_hint = zope.interface.Attribute(
-        """Hint on how to correct metadata at source"""
-    )
-
-    always_apply_changes = zope.interface.Attribute(
-        """Flag indicating whether changes should always be applied
-        (even if the colrev_status does not transition to md_prepared)"""
-    )
-
-    # pylint: disable=no-self-argument
-    def prepare(prep_record: dict) -> dict:  # type: ignore
-        """Run the prep operation"""
+    @abstractmethod
+    def prepare(
+        self,
+        record: colrev.record.record_prep.PrepRecord,
+        source: colrev.settings.SearchSource,
+    ) -> colrev.record.record.Record:
+        """Run the custom source-prep operation."""
 
 
-# pylint: disable=too-few-public-methods
-class PrepManInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for prep-man operations"""
+class PrepInterface(ABC):
+    """The PackageEndpoint abstract base class for prep operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
+    source_correction_hint: str
+    always_apply_changes: bool
 
-    # pylint: disable=no-self-argument
-    def prepare_manual(records: dict) -> dict:  # type: ignore
-        """Run the prep-man operation"""
-
-
-# pylint: disable=too-few-public-methods
-class DedupeInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for dedupe operations"""
-
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
-
-    # pylint: disable=no-self-argument
-    # pylint: disable=no-method-argument
-    def run_dedupe() -> None:  # type: ignore
-        """Run the dedupe operation"""
+    @abstractmethod
+    def prepare(
+        self, record: colrev.record.record_prep.PrepRecord
+    ) -> colrev.record.record.Record:
+        """Run the prep operation."""
 
 
-# pylint: disable=too-few-public-methods
-class PrescreenInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for prescreen operations"""
+class PrepManInterface(ABC):
+    """The PackageEndpoint abstract base class for prep-man operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
 
-    # pylint: disable=no-self-argument
-    def run_prescreen(records: dict, split: list) -> dict:  # type: ignore
-        """Run the prescreen operation"""
+    @abstractmethod
+    def prepare_manual(self, records: dict) -> dict:
+        """Run the prep-man operation."""
 
 
-# pylint: disable=too-few-public-methods
-class PDFGetInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for pdf-get operations"""
+class DedupeInterface(ABC):
+    """The PackageEndpoint abstract base class for dedupe operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
 
-    # pylint: disable=no-self-argument
-    def get_pdf(record: dict) -> dict:  # type: ignore
-        """Run the pdf-get operation"""
-        return record  # pragma: no cover
+    @abstractmethod
+    def run_dedupe(self) -> None:
+        """Run the dedupe operation."""
 
 
-# pylint: disable=too-few-public-methods
-class PDFGetManInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for pdf-get-man operations"""
+class PrescreenInterface(ABC):
+    """The PackageEndpoint abstract base class for prescreen operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
+    settings: colrev.package_manager.package_settings.DefaultSettings
 
-    # pylint: disable=no-self-argument
-    def pdf_get_man(records: dict) -> dict:
-        """Run the pdf-get-man operation"""
-        return records  # pragma: no cover
+    @abstractmethod
+    def run_prescreen(self, records: dict, split: list) -> dict:
+        """Run the prescreen operation."""
 
 
-# pylint: disable=too-few-public-methods
-class PDFPrepInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for pdf-prep operations"""
+class PDFGetInterface(ABC):
+    """The PackageEndpoint abstract base class for pdf-get operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
 
-    # pylint: disable=unused-argument
-    # pylint: disable=no-self-argument
-    def prep_pdf(  # type: ignore
-        record: colrev.record.record_pdf.PDFRecord,
-        pad: int,
-    ) -> dict:
-        """Run the prep-pdf operation"""
-        return record.data  # pragma: no cover
+    @abstractmethod
+    def get_pdf(
+        self, record: colrev.record.record.Record
+    ) -> colrev.record.record.Record:
+        """Run the pdf-get operation."""
 
 
-# pylint: disable=too-few-public-methods
-class PDFPrepManInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for pdf-prep-man operations"""
+class PDFGetManInterface(ABC):
+    """The PackageEndpoint abstract base class for pdf-get-man operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
 
-    # pylint: disable=no-self-argument
-    def pdf_prep_man(records: dict) -> dict:
-        """Run the prep-man operation"""
-        return records  # pragma: no cover
+    @abstractmethod
+    def pdf_get_man(self, records: dict) -> dict:
+        """Run the pdf-get-man operation."""
 
 
-# pylint: disable=too-few-public-methods
-class ScreenInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for screen operations"""
+class PDFPrepInterface(ABC):
+    """The PackageEndpoint abstract base class for pdf-prep operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
 
-    # pylint: disable=no-self-argument
-    def run_screen(records: dict, split: list) -> dict:  # type: ignore
-        """Run the screen operation"""
+    @abstractmethod
+    def prep_pdf(
+        self, record: colrev.record.record_pdf.PDFRecord, pad: int
+    ) -> colrev.record.record.Record:
+        """Run the prep-pdf operation."""
 
 
-class DataInterface(
-    GeneralInterface, zope.interface.Interface
-):  # pylint: disable=inherit-non-class
-    """The PackageEndpoint interface for data operations"""
+class PDFPrepManInterface(ABC):
+    """The PackageEndpoint abstract base class for pdf-prep-man operations."""
 
-    settings_class = zope.interface.Attribute("""Class for the package settings""")
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
 
-    # pylint: disable=no-self-argument
+    @abstractmethod
+    def pdf_prep_man(self, records: dict) -> dict:
+        """Run the pdf-prep-man operation."""
 
-    def update_data(  # type: ignore
-        records: dict,
-        synthesized_record_status_matrix: dict,
-        silent_mode: bool,
+
+class ScreenInterface(ABC):
+    """The PackageEndpoint abstract base class for screen operations."""
+
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
+
+    @abstractmethod
+    def run_screen(self, records: dict, split: list) -> dict:
+        """Run the screen operation."""
+
+
+class DataInterface(ABC):
+    """The PackageEndpoint abstract base class for data operations."""
+
+    settings_class: Type[colrev.package_manager.package_settings.DefaultSettings]
+
+    @abstractmethod
+    def update_data(
+        self, records: dict, synthesized_record_status_matrix: dict, silent_mode: bool
     ) -> None:
-        """
-        Update the data by running the data operation. This includes data extraction,
-        analysis, and synthesis.
+        """Update the data by running the data operation."""
 
-        Parameters:
-        records (dict): The records to be updated.
-        synthesized_record_status_matrix (dict): The status matrix for the synthesized records.
-        silent_mode (bool): Whether the operation is run in silent mode
-        (for checks of review_manager/status).
-        """
-
-    def update_record_status_matrix(  # type: ignore
-        synthesized_record_status_matrix: dict,
-        endpoint_identifier: str,
+    @abstractmethod
+    def update_record_status_matrix(
+        self, synthesized_record_status_matrix: dict, endpoint_identifier: str
     ) -> None:
-        """Update the record status matrix,
-        i.e., indicate whether the record is rev_synthesized for the given endpoint_identifier
-        """
+        """Update the record status matrix."""
 
-    # pylint: disable=no-method-argument
-    def get_advice() -> dict:  # type: ignore
-        """Get advice on how to operate the data package endpoint"""
+    @abstractmethod
+    def get_advice(self) -> dict:
+        """Get advice on how to operate the data package endpoint."""
 
 
-ENDPOINT_OVERVIEW = {
+BASECLASS_OVERVIEW = {
     EndpointType.review_type: {
         "import_name": ReviewTypeInterface,
         "custom_class": "CustomReviewType",
@@ -358,7 +295,8 @@ ENDPOINT_OVERVIEW = {
     },
 }
 
-INTERFACE_MAP = {}
-for endpoint_type, endpoint_data in ENDPOINT_OVERVIEW.items():
+
+BASECLASS_MAP = {}
+for endpoint_type, endpoint_data in BASECLASS_OVERVIEW.items():
     import_name = endpoint_data["import_name"].__name__  # type: ignore
-    INTERFACE_MAP[endpoint_type.name] = import_name
+    BASECLASS_MAP[endpoint_type.name] = import_name

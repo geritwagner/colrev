@@ -6,7 +6,6 @@ import typing
 import urllib.parse
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -24,8 +23,7 @@ from colrev.packages.eric.src import eric_api
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class ERICSearchSource:
+class ERICSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """ERIC API"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

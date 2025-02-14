@@ -8,7 +8,6 @@ from multiprocessing import Lock
 from pathlib import Path
 
 import inquirer
-import zope.interface
 from github import Auth
 from github import Github
 from pydantic import Field
@@ -34,8 +33,7 @@ def is_github_api_key(previous: dict, answer: str) -> bool:
     raise inquirer.errors.ValidationError("", reason="Invalid GitHub API key format.")
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class GitHubSearchSource:
+class GitHubSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """GitHub API"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

@@ -7,7 +7,6 @@ import typing
 from pathlib import Path
 
 import pymupdf
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -22,8 +21,7 @@ from colrev.constants import Filepaths
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PDFPrepInterface)
-class PDFLastPage:
+class PDFLastPage(colrev.package_manager.interfaces.PDFPrepInterface):
     """Prepare PDFs by removing unnecessary last pages (e.g. copyright notices, cited-by infos)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings
@@ -43,11 +41,11 @@ class PDFLastPage:
         self,
         record: colrev.record.record_pdf.PDFRecord,
         pad: int,  # pylint: disable=unused-argument
-    ) -> dict:
+    ) -> colrev.record.record_pdf.PDFRecord:
         """Prepare the PDF by removing additional materials (if any)"""
 
         if not record.data[Fields.FILE].endswith(".pdf"):
-            return record.data
+            return record
 
         Filepaths.LASTPAGES.mkdir(exist_ok=True)
 
@@ -108,7 +106,7 @@ class PDFLastPage:
 
         last_pages = _get_last_pages(pdf=record.data[Fields.FILE])
         if not last_pages:
-            return record.data
+            return record
         if last_pages:
             original = self.review_manager.path / Path(record.data[Fields.FILE])
             file_copy = self.review_manager.path / Path(
@@ -123,4 +121,4 @@ class PDFLastPage:
             self.review_manager.report_logger.info(
                 f"removed last page for ({record.data[Fields.ID]})"
             )
-        return record.data
+        return record

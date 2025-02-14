@@ -7,7 +7,6 @@ import re
 from sqlite3 import OperationalError
 
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -24,8 +23,7 @@ from colrev.constants import Fields
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class DOIFromURLsPrep:
+class DOIFromURLsPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records by retrieving its DOI from the website (URL)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

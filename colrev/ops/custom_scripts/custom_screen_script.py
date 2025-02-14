@@ -5,8 +5,6 @@ from __future__ import annotations
 import random
 import typing
 
-import zope.interface
-
 import colrev.package_manager.interfaces
 import colrev.package_manager.package_settings
 import colrev.process.operation
@@ -19,8 +17,7 @@ if typing.TYPE_CHECKING:  # pragma: no cover
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.ScreenInterface)
-class CustomScreen:
+class CustomScreen(colrev.package_manager.interfaces.ScreenInterface):
     """Class for custom screen scripts"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings
@@ -32,14 +29,15 @@ class CustomScreen:
         settings: dict,
     ) -> None:
         self.settings = self.settings_class(**settings)
+        self.screen_operation = screen_operation
 
-    def run_screen(
-        self, screen_operation: colrev.screen.Screen, records: dict, split: list
-    ) -> dict:
+    def run_screen(self, records: dict, split: list) -> dict:
         """Screen a record"""
 
-        screen_data = screen_operation.get_data()
-        screening_criteria = screen_operation.review_manager.settings.screen.criteria
+        screen_data = self.screen_operation.get_data()
+        screening_criteria = (
+            self.screen_operation.review_manager.settings.screen.criteria
+        )
 
         screening_criteria_available = bool(screening_criteria)
 
@@ -54,7 +52,7 @@ class CustomScreen:
                 if screening_criteria_available:
                     # record criteria
                     pass
-                screen_operation.screen(
+                self.screen_operation.screen(
                     record=record,
                     screen_inclusion=True,
                     screening_criteria="...",
@@ -64,15 +62,15 @@ class CustomScreen:
                 if screening_criteria_available:
                     # record criteria
                     pass
-                screen_operation.screen(
+                self.screen_operation.screen(
                     record=record,
                     screen_inclusion=False,
                     screening_criteria="...",
                 )
 
-        screen_operation.review_manager.dataset.save_records_dict(records)
-        screen_operation.review_manager.dataset.add_record_changes()
-        screen_operation.review_manager.dataset.create_commit(
+        self.screen_operation.review_manager.dataset.save_records_dict(records)
+        self.screen_operation.review_manager.dataset.add_record_changes()
+        self.screen_operation.review_manager.dataset.create_commit(
             msg="Screen (random)", manual_author=False, script_call="colrev screen"
         )
         return records

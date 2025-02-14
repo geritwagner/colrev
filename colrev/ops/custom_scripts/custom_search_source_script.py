@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import zope.interface
-
 import colrev.exceptions as colrev_exceptions
 import colrev.package_manager.interfaces
 import colrev.package_manager.package_settings
@@ -14,8 +12,7 @@ import colrev.record.record
 from colrev.constants import Fields
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class CustomSearch:
+class CustomSearch(colrev.package_manager.interfaces.SearchSourceInterface):
     """Class for custom search scripts"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings
@@ -67,8 +64,9 @@ class CustomSearch:
                 "CROSSREF queries require a journal_issn field in the SCOPE section"
             )
 
+    @classmethod
     def heuristic(
-        self, filename: Path, data: str  # pylint: disable=unused-argument
+        cls, filename: Path, data: str  # pylint: disable=unused-argument
     ) -> dict:
         """Heuristic to identify the custom source"""
 
@@ -86,7 +84,9 @@ class CustomSearch:
         return records
 
     def prepare(
-        self, record: colrev.record.record.Record
+        self,
+        record: colrev.record.record.Record,
+        source: colrev.settings.SearchSource,
     ) -> colrev.record.record.Record:
         """Source-specific preparation for the custom source"""
 

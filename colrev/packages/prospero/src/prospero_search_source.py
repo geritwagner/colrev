@@ -8,7 +8,6 @@ from __future__ import annotations
 import typing
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -27,8 +26,7 @@ from colrev.ops.search import Search
 from colrev.settings import SearchSource
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class ProsperoSearchSource:
+class ProsperoSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Prospero Search Source for retrieving protocol data"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings
@@ -191,11 +189,12 @@ class ProsperoSearchSource:
     def prep_link_md(
         self,
         prep_operation: typing.Any,
-        record: dict,
+        record: colrev.record.record.Record,
         save_feed: bool = True,
         timeout: int = 10,
-    ) -> None:
+    ) -> colrev.record.record.Record:
         """Empty method as requested."""
+        return record
 
     def _load_bib(self) -> dict:
         """Helper to load from .bib file using CoLRev's load_utils."""
@@ -219,5 +218,10 @@ class ProsperoSearchSource:
         )
 
     # pylint: disable=unused-argument
-    def prepare(self, record: dict, source: dict) -> None:
+    def prepare(
+        self,
+        record: colrev.record.record_prep.PrepRecord,
+        source: colrev.settings.SearchSource,
+    ) -> colrev.record.record_prep.PrepRecord:
         """Map fields to standardized fields for CoLRev (matching interface signature)."""
+        return record

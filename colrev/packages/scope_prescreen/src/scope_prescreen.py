@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import typing
 
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -72,8 +71,7 @@ class ScopePrescreenSettings(
     }
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrescreenInterface)
-class ScopePrescreen:
+class ScopePrescreen(colrev.package_manager.interfaces.PrescreenInterface):
     """Rule-based prescreen (scope)"""
 
     settings: ScopePrescreenSettings

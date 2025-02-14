@@ -8,7 +8,6 @@ from pathlib import Path
 
 import docker
 import pandas as pd
-import zope.interface
 from docker.errors import DockerException
 from pydantic import BaseModel
 from pydantic import Field
@@ -21,8 +20,7 @@ import colrev.package_manager.package_manager
 import colrev.package_manager.package_settings
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.DataInterface)
-class PRISMA:
+class PRISMA(colrev.package_manager.interfaces.DataInterface):
     """Create a PRISMA diagram"""
 
     ci_supported: bool = Field(default=False)

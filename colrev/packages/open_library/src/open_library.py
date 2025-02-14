@@ -8,7 +8,6 @@ from multiprocessing import Lock
 from pathlib import Path
 
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -28,8 +27,7 @@ from colrev.constants import SearchType
 # pylint: disable=unused-argument
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class OpenLibrarySearchSource:
+class OpenLibrarySearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """OpenLibrary API"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

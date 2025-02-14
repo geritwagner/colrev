@@ -8,7 +8,6 @@ import typing
 from pathlib import Path
 
 import pandas as pd
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -35,8 +34,7 @@ class ColrevCurationSettings(
     curated_fields: list
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.DataInterface)
-class ColrevCuration:
+class ColrevCuration(colrev.package_manager.interfaces.DataInterface):
     """CoLRev Curation"""
 
     settings: ColrevCurationSettings

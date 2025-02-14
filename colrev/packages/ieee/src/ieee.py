@@ -6,7 +6,6 @@ import typing
 from pathlib import Path
 
 import pandas as pd
-import zope.interface
 from pydantic import Field
 
 import colrev.ops.prep
@@ -25,8 +24,7 @@ from colrev.constants import SearchType
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class IEEEXploreSearchSource:
+class IEEEXploreSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """IEEEXplore"""
 
     flag = True

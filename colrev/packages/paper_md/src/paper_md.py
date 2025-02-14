@@ -13,7 +13,6 @@ from threading import Timer
 
 import docker
 import requests
-import zope.interface
 from docker.errors import DockerException
 from pydantic import BaseModel
 from pydantic import Field
@@ -57,8 +56,7 @@ class PaperMarkdownSettings(BaseModel):
 
 
 # pylint: disable=too-many-instance-attributes
-@zope.interface.implementer(colrev.package_manager.interfaces.DataInterface)
-class PaperMarkdown:
+class PaperMarkdown(colrev.package_manager.interfaces.DataInterface):
     """Synthesize the literature in a markdown paper
 
     The paper (paper.md) is created automatically.

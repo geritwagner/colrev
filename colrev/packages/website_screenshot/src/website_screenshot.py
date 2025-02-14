@@ -8,7 +8,6 @@ from pathlib import Path
 
 import docker
 import requests
-import zope.interface
 from docker.errors import DockerException
 from pydantic import Field
 
@@ -25,8 +24,7 @@ from colrev.constants import RecordState
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PDFGetInterface)
-class WebsiteScreenshot:
+class WebsiteScreenshot(colrev.package_manager.interfaces.PDFGetInterface):
     """Get PDFs from website screenshot (for "online" ENTRYTYPES)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

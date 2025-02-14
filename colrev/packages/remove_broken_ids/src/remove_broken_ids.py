@@ -2,7 +2,6 @@
 """Removal of broken IDs as a prep operation"""
 from __future__ import annotations
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -17,8 +16,7 @@ from colrev.constants import Fields
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class RemoveBrokenIDPrep:
+class RemoveBrokenIDPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records by removing invalid IDs DOIs/ISBNs"""
 
     ci_supported: bool = Field(default=True)

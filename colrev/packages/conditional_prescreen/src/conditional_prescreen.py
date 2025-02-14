@@ -2,7 +2,6 @@
 """Conditional prescreen"""
 from __future__ import annotations
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -17,8 +16,7 @@ from colrev.constants import RecordState
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrescreenInterface)
-class ConditionalPrescreen:
+class ConditionalPrescreen(colrev.package_manager.interfaces.PrescreenInterface):
     """Conditional prescreen (currently: include all)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

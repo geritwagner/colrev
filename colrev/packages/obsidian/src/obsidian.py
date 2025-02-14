@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -17,8 +16,7 @@ import colrev.record.record
 from colrev.constants import Fields
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.DataInterface)
-class Obsidian:
+class Obsidian(colrev.package_manager.interfaces.DataInterface):
     """Export the sample into an Obsidian database"""
 
     ci_supported: bool = Field(default=False)

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 """Meta-analysis"""
-import zope.interface
 from pydantic import Field
 
 import colrev.ops.search
@@ -20,8 +19,8 @@ from colrev.packages.pdf_backward_search.src.pdf_backward_search import (
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
-class MetaAnalysis:
+# @zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
+class MetaAnalysis(colrev.package_manager.interfaces.ReviewTypeInterface):
     """Meta-analysis"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import textwrap
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -19,8 +18,7 @@ from colrev.constants import Fields
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrescreenInterface)
-class CoLRevCLIPrescreen:
+class CoLRevCLIPrescreen(colrev.package_manager.interfaces.PrescreenInterface):
     """CLI-based prescreen"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

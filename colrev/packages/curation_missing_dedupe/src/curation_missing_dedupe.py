@@ -6,7 +6,6 @@ import typing
 from pathlib import Path
 
 import pandas as pd
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -25,8 +24,7 @@ from colrev.constants import RecordState
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.DedupeInterface)
-class CurationMissingDedupe:
+class CurationMissingDedupe(colrev.package_manager.interfaces.DedupeInterface):
     """Deduplication of remaining records in a curated metadata repository"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 """Simple literature review"""
-import zope.interface
 from pydantic import Field
 
 import colrev.ops.search
@@ -14,8 +13,8 @@ import colrev.record.record
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
-class LiteratureReview:
+# # @zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
+class LiteratureReview(colrev.package_manager.interfaces.ReviewTypeInterface):
     """Literature review (simple)"""
 
     ci_supported: bool = Field(default=True)

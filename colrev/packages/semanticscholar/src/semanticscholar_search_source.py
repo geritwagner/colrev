@@ -7,7 +7,6 @@ from multiprocessing import Lock
 from pathlib import Path
 
 import requests
-import zope.interface
 from pydantic import Field
 from semanticscholar import SemanticScholar
 from semanticscholar import SemanticScholarException
@@ -40,8 +39,9 @@ if typing.TYPE_CHECKING:  # pragma: no cover
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class SemanticScholarSearchSource:
+class SemanticScholarSearchSource(
+    colrev.package_manager.interfaces.SearchSourceInterface
+):
     """Semantic Scholar API Search Source"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

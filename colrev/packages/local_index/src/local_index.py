@@ -10,7 +10,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import git
-import zope.interface
 from pydantic import Field
 
 import colrev.env.local_index
@@ -32,8 +31,7 @@ from colrev.constants import SearchType
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class LocalIndexSearchSource:
+class LocalIndexSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """LocalIndex"""
 
     # pylint: disable=too-many-instance-attributes

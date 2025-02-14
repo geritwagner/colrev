@@ -9,7 +9,6 @@ from pathlib import Path
 import inquirer
 import pandas as pd
 import requests
-import zope.interface
 from bib_dedupe.bib_dedupe import block
 from bib_dedupe.bib_dedupe import cluster
 from bib_dedupe.bib_dedupe import match
@@ -36,8 +35,7 @@ from colrev.packages.crossref.src import crossref_api
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class BackwardSearchSource:
+class BackwardSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Backward search extracting references from PDFs using GROBID
     Scope: all included papers with colrev_status in (rev_included, rev_synthesized)
     """

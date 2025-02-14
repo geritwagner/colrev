@@ -8,7 +8,6 @@ from pathlib import Path
 
 import pymupdf
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -22,8 +21,7 @@ from colrev.packages.unpaywall.src import utils
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PDFGetInterface)
-class Unpaywall:
+class Unpaywall(colrev.package_manager.interfaces.PDFGetInterface):
     """Get PDFs from unpaywall.org"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

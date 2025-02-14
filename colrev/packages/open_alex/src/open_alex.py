@@ -7,7 +7,6 @@ from multiprocessing import Lock
 from pathlib import Path
 
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -25,8 +24,7 @@ from colrev.packages.open_alex.src import open_alex_api
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class OpenAlexSearchSource:
+class OpenAlexSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """OpenAlex API"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

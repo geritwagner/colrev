@@ -7,7 +7,6 @@ from enum import Enum
 from pathlib import Path
 
 import inquirer
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -49,8 +48,7 @@ class BibliographyExportSettings(
     bib_format: BibFormats
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.DataInterface)
-class BibliographyExport:
+class BibliographyExport(colrev.package_manager.interfaces.DataInterface):
     """Export the sample references in Endpoint format"""
 
     settings: BibliographyExportSettings

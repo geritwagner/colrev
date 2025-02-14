@@ -8,7 +8,6 @@ from multiprocessing import Lock
 from pathlib import Path
 
 import requests
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -50,8 +49,7 @@ class DBLPSearchSourceSettings(colrev.settings.SearchSource, BaseModel):
     }
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class DBLPSearchSource:
+class DBLPSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """DBLP API"""
 
     source_identifier = "dblp_key"

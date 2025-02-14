@@ -7,7 +7,6 @@ import typing
 from pathlib import Path
 
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -25,8 +24,9 @@ from colrev.packages.crossref.src import crossref_api
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class OpenCitationsSearchSource:
+class OpenCitationsSearchSource(
+    colrev.package_manager.interfaces.SearchSourceInterface
+):
     """Forward search based on OpenCitations
     Scope: all included papers with colrev_status in (rev_included, rev_synthesized)
     """

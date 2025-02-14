@@ -9,7 +9,6 @@ from pathlib import Path
 
 import pandas as pd
 import pandasql as ps
-import zope.interface
 from git import Repo
 from pandasql.sqldf import PandaSQLException
 from pydantic import Field
@@ -29,8 +28,9 @@ from colrev.constants import SearchType
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class ColrevProjectSearchSource:
+class ColrevProjectSearchSource(
+    colrev.package_manager.interfaces.SearchSourceInterface
+):
     """CoLRev projects"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

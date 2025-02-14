@@ -6,7 +6,6 @@ from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
-import zope.interface
 from bs4 import BeautifulSoup
 from pydantic import Field
 
@@ -20,8 +19,7 @@ from colrev.constants import Fields
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PDFGetInterface)
-class WebsiteDownload:
+class WebsiteDownload(colrev.package_manager.interfaces.PDFGetInterface):
     """Get PDFs from the website"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

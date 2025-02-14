@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 from rapidfuzz import fuzz
@@ -31,8 +30,7 @@ class CurationDedupeSettings(BaseModel):
     selected_source: str
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.DedupeInterface)
-class CurationDedupe:
+class CurationDedupe(colrev.package_manager.interfaces.DedupeInterface):
     """Deduplication endpoint for curations with full journals/proceedings
     retrieved from different sources (identifying duplicates in groups of
     volumes/issues or years)"""

@@ -15,12 +15,11 @@ from typing import Type
 
 import git
 import inquirer
-import zope.interface.interface
 
 from colrev.constants import Colors
+from colrev.package_manager.interfaces import BASECLASS_MAP
 from colrev.package_manager.interfaces import DataInterface
 from colrev.package_manager.interfaces import DedupeInterface
-from colrev.package_manager.interfaces import INTERFACE_MAP
 from colrev.package_manager.interfaces import PDFGetInterface
 from colrev.package_manager.interfaces import PDFGetManInterface
 from colrev.package_manager.interfaces import PDFPrepInterface
@@ -244,7 +243,7 @@ def _get_package_data(default_package_name: str, built_in: bool) -> dict:
         inquirer.Checkbox(
             "plugins",
             message="Select the plugin types (use SPACE to select)",
-            choices=list(INTERFACE_MAP.keys()),
+            choices=list(BASECLASS_MAP.keys()),
         )
     )
 
@@ -332,6 +331,7 @@ def _get_package_data(default_package_name: str, built_in: bool) -> dict:
     return package_data
 
 
+# TODO : this would need to be revised
 # pylint: disable=too-many-branches
 def _get_init_method(interface_class: Type) -> str:
 
@@ -450,22 +450,24 @@ def _generate_method_signatures(module_path: str, class_name: str) -> list:
         method_signatures = []
 
         for name, attr in attrs_dict.items():
-            if isinstance(attr, zope.interface.interface.Attribute) and not isinstance(
-                attr, zope.interface.interface.Method
-            ):
-                method_signatures.append(f"    {name} = '' #TODO\n")
+            # TODO
+            # if isinstance(attr, zope.interface.interface.Attribute) and not isinstance(
+            #     attr, zope.interface.interface.Method
+            # ):
+            method_signatures.append(f"    {name} = '' #TODO\n")
         method_signatures.append("\n")
         method_signatures.append(_get_init_method(interface_class))
         method_signatures.append("\n")
         method_signatures.append("\n")
 
         for name, attr in attrs_dict.items():
-            if isinstance(attr, zope.interface.interface.Method):
-                sig_string = attr.getSignatureString().replace("(", "(self, ")
-                method_signatures.append(
-                    f"    def {name}{sig_string}:\n"
-                    f'      """{attr.getDoc()}"""\n      # TODO\n\n'
-                )
+            # TODO
+            # if isinstance(attr, zope.interface.interface.Method):
+            sig_string = attr.getSignatureString().replace("(", "(self, ")
+            method_signatures.append(
+                f"    def {name}{sig_string}:\n"
+                f'      """{attr.getDoc()}"""\n      # TODO\n\n'
+            )
 
         return method_signatures
 
@@ -508,24 +510,22 @@ def _create_module_files(package_data: dict) -> None:
 
     for plugin, data in package_data["plugins"].items():
         file_path = os.path.join("src", f"{data['module']}.py")
-        interface = INTERFACE_MAP[plugin]
+        baseclass = BASECLASS_MAP[plugin]
 
         module_path = "colrev.package_manager.interfaces"
-        method_signatures = _generate_method_signatures(module_path, interface)
+        method_signatures = _generate_method_signatures(module_path, baseclass)
 
         with open(file_path, "w", encoding="utf-8") as file:
             file.write(
                 f'''#! /usr/bin/env python
-"""{interface}: {data['class']}"""
+"""{baseclass}: {data['class']}"""
 
 import typing
-from zope.interface import implementer
-from colrev.package_manager.interfaces import {interface}
+from colrev.package_manager.interfaces import {baseclass}
 import colrev.package_manager.package_settings
 {_get_package_imports(plugin)}
 
-@implementer({interface})
-class {data['class']}:
+class {data['class']}({baseclass}):
 '''
             )
             for signature in method_signatures:

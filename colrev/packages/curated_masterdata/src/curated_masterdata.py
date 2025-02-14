@@ -2,7 +2,6 @@
 """Curated metadata project"""
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.env.utils
@@ -17,8 +16,8 @@ from colrev.constants import Fields
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
-class CuratedMasterdata:
+# @zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
+class CuratedMasterdata(colrev.package_manager.interfaces.ReviewTypeInterface):
     """Curated masterdata"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

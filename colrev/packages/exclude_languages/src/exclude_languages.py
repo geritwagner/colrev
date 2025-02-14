@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 import statistics
 
-import zope.interface
 from pydantic import Field
 
 import colrev.env.language_service
@@ -21,8 +20,7 @@ from colrev.constants import RecordState
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class ExcludeLanguagesPrep:
+class ExcludeLanguagesPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records by excluding ones that are not in the languages_to_include"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

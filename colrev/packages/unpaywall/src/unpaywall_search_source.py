@@ -5,7 +5,6 @@ from __future__ import annotations
 import typing
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -21,8 +20,7 @@ from colrev.packages.unpaywall.src.api import UnpaywallAPI
 # pylint: disable=unused-argument
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class UnpaywallSearchSource:
+class UnpaywallSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Unpaywall Search Source"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings
@@ -64,7 +62,9 @@ class UnpaywallSearchSource:
         return result
 
     @classmethod
-    def add_endpoint(cls, operation: colrev.ops.search.Search, params: str) -> None:
+    def add_endpoint(
+        cls, operation: colrev.ops.search.Search, params: str
+    ) -> colrev.settings.SearchSource:
         """Add SearchSource as an endpoint (based on query provided to colrev search -a )"""
 
         params_dict = {}
@@ -115,6 +115,7 @@ class UnpaywallSearchSource:
             )
 
         operation.add_source_and_search(search_source)
+        return search_source
 
     def _run_api_search(
         self, *, unpaywall_feed: colrev.ops.search_api_feed.SearchAPIFeed, rerun: bool

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 """Methodological review"""
-import zope.interface
 from pydantic import Field
 
 import colrev.ops.search
@@ -14,8 +13,8 @@ import colrev.record.record
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
-class MethodologicalReview:
+# @zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
+class MethodologicalReview(colrev.package_manager.interfaces.ReviewTypeInterface):
     """Methodological review"""
 
     ci_supported: bool = Field(default=True)

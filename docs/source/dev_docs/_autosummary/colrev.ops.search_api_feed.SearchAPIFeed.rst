@@ -21,3 +21,13 @@ colrev.ops.search\_api\_feed.SearchAPIFeed
       ~SearchAPIFeed.get_last_updated
       ~SearchAPIFeed.get_prev_feed_record
       ~SearchAPIFeed.save
+
+
+
+
+
+   .. rubric:: Attributes
+
+   .. autosummary::
+
+      ~SearchAPIFeed.source_identifier

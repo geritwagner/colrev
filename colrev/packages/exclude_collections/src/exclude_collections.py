@@ -2,7 +2,6 @@
 """Exclude collections as a prep operation"""
 from __future__ import annotations
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -17,8 +16,7 @@ from colrev.constants import Fields
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class ExcludeCollectionsPrep:
+class ExcludeCollectionsPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records by excluding collection entries (e.g., proceedings)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

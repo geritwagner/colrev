@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -21,8 +20,9 @@ from colrev.constants import SearchType
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class TransportResearchInternationalDocumentation:
+class TransportResearchInternationalDocumentation(
+    colrev.package_manager.interfaces.SearchSourceInterface
+):
     """Transport Research International Documentation"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

@@ -11,7 +11,6 @@ from urllib.parse import quote
 from urllib.parse import urlparse
 
 import requests
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 from rapidfuzz import fuzz
@@ -52,8 +51,7 @@ class EuropePMCSearchSourceSettings(colrev.settings.SearchSource, BaseModel):
     }
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class EuropePMCSearchSource:
+class EuropePMCSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Europe PMC"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

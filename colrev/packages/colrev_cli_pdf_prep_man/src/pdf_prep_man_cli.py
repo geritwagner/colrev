@@ -10,7 +10,6 @@ import textwrap
 from pathlib import Path
 
 import inquirer
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -26,8 +25,7 @@ from colrev.constants import RecordState
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PDFPrepManInterface)
-class CoLRevCLIPDFManPrep:
+class CoLRevCLIPDFManPrep(colrev.package_manager.interfaces.PDFPrepManInterface):
     """Manually prepare PDFs based on a CLI (not yet implemented)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

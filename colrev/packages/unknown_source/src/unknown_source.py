@@ -7,7 +7,6 @@ import shutil
 from pathlib import Path
 
 import pandas as pd
-import zope.interface
 from pydantic import Field
 from rapidfuzz import fuzz
 
@@ -31,8 +30,7 @@ from colrev.constants import SearchType
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class UnknownSearchSource:
+class UnknownSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Unknown SearchSource"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

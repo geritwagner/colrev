@@ -8,7 +8,6 @@ from pathlib import Path
 
 import pandas as pd
 import pymupdf
-import zope.interface
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -44,8 +43,7 @@ class ExportManPrepSettings(
     }
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepManInterface)
-class ExportManPrep:
+class ExportManPrep(colrev.package_manager.interfaces.PrepManInterface):
     """Manual preparation based on exported and imported metadata (and PDFs if any)"""
 
     settings: ExportManPrepSettings

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.loader.bib
@@ -21,8 +20,7 @@ from colrev.constants import SearchType
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class ScopusSearchSource:
+class ScopusSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Scopus"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

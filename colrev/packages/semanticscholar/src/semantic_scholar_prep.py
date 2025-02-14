@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -21,8 +20,7 @@ from colrev.packages.semanticscholar.src import record_transformer
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class SemanticScholarPrep:
+class SemanticScholarPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records based on SemanticScholar metadata"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

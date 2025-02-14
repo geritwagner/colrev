@@ -2,7 +2,6 @@
 """Conslidation of metadata based on LocalIndex as a prep operation"""
 from __future__ import annotations
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -18,8 +17,7 @@ from colrev.constants import Fields
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class LocalIndexPrep:
+class LocalIndexPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records based on LocalIndex metadata"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

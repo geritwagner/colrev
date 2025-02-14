@@ -8,9 +8,8 @@ from importlib.metadata import distributions
 from importlib.metadata import PackageNotFoundError
 from pathlib import Path
 from typing import Any
-
-import zope.interface.exceptions
-from zope.interface.verify import verifyClass
+from typing import cast
+from typing import Type
 
 import colrev.env.utils
 import colrev.exceptions as colrev_exceptions
@@ -25,7 +24,7 @@ from colrev.constants import EndpointType
 # 9ebca7ecc028549dadb3d51d2184f9850f6f9f9d/DESCRIPTION
 
 
-ENDPOINT_OVERVIEW = colrev.package_manager.interfaces.ENDPOINT_OVERVIEW
+BASECLASS_OVERVIEW = colrev.package_manager.interfaces.BASECLASS_OVERVIEW
 
 
 class Package:
@@ -76,16 +75,22 @@ class Package:
             0
         ].value
 
-    def _endpoint_verified(
-        self, endpoint_class: Any, endpoint_type: EndpointType, identifier: str
-    ) -> bool:
-        interface_definition = ENDPOINT_OVERVIEW[endpoint_type]["import_name"]
-        try:
-            verifyClass(interface_definition, endpoint_class)  # type: ignore
-            return True
-        except zope.interface.exceptions.BrokenImplementation as exc:
-            print(f"Error registering endpoint {identifier}: {exc}")
-        return False
+    def _verify_endpoint(
+        self,
+        endpoint_class: Any,
+        endpoint_type: EndpointType,
+        identifier: str,
+    ) -> None:
+        # baseclass_definition = BASECLASS_OVERVIEW[endpoint_type]["import_name"]
+
+        baseclass_definition = cast(
+            Type, BASECLASS_OVERVIEW[endpoint_type]["import_name"]
+        )
+        if not issubclass(endpoint_class, baseclass_definition):
+            raise TypeError(
+                f"{identifier}({endpoint_class}) must implement "
+                f"all abstract methods of {baseclass_definition}!"
+            )
 
     def get_endpoint_class(self, package_type: EndpointType) -> Any:
         """Get the endpoint class for a package type"""
@@ -98,11 +103,7 @@ class Package:
         module_name, class_name = endpoint_path.split(":")
         module = importlib.import_module(module_name)
         cls = getattr(module, class_name)
-        if not self._endpoint_verified(cls, package_type, self.name):
-            raise colrev_exceptions.MissingDependencyError(
-                f"Endpoint {class_name} in {module_name} "
-                f"does not implement the {package_type} interface"
-            )
+        self._verify_endpoint(cls, package_type, self.name)
         return cls
 
     def add_to_type_identifier_endpoint_dict(

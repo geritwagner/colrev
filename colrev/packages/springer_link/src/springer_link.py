@@ -10,7 +10,6 @@ from pathlib import Path
 import inquirer
 import pandas as pd
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -32,8 +31,7 @@ from colrev.constants import SearchType
 # https://dev.springernature.com/
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class SpringerLinkSearchSource:
+class SpringerLinkSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Springer Link"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

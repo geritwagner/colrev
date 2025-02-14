@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 """Conceptual review"""
-import zope.interface
 from pydantic import Field
 
 import colrev.ops.search
@@ -14,8 +13,8 @@ import colrev.record.record
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
-class ConceptualReview:
+# @zope.interface.implementer(colrev.package_manager.interfaces.ReviewTypeInterface)
+class ConceptualReview(colrev.package_manager.interfaces.ReviewTypeInterface):
     """Conceptual review"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

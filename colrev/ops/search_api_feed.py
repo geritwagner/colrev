@@ -71,6 +71,23 @@ class SearchAPIFeed:
         if not prep_mode:
             self.records = self.review_manager.dataset.load_records_dict()
 
+    @property
+    def source_identifier(self) -> str:
+        """Get the source identifier"""
+        return self._source_identifier
+
+    # TODO : check where to use validation (all colrev classes?
+    # just those that are used by external/new packages!?)
+    # Note: the problem was caused by a package directly setting
+    # the source_identifier to a non-supported type/value
+    @source_identifier.setter
+    def source_identifier(self, value: str) -> None:
+        if not isinstance(value, str):
+            raise ValueError("source_identifier must be a string")
+        if not len(value) > 1:
+            raise ValueError("source_identifier must be at least 2 characters")
+        self._source_identifier = value
+
     def get_last_updated(self) -> str:
         """Returns the date of the last update (if available) in YYYY-MM-DD format"""
         file = self.feed_file

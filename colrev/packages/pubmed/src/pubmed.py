@@ -9,7 +9,6 @@ from urllib.parse import urlparse
 
 import pandas as pd
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -30,8 +29,7 @@ from colrev.packages.pubmed.src import pubmed_api
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class PubMedSearchSource:
+class PubMedSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Pubmed"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

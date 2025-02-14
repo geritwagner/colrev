@@ -9,7 +9,6 @@ from pathlib import Path
 
 import inquirer
 import requests
-import zope.interface
 from pydantic import Field
 
 import colrev.env.language_service
@@ -35,8 +34,7 @@ if typing.TYPE_CHECKING:  # pragma: no cover
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class CrossrefSearchSource:
+class CrossrefSearchSource(colrev.package_manager.interfaces.SearchSourceInterface):
     """Crossref API"""
 
     endpoint = "colrev.crossref"

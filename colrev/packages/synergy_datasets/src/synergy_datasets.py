@@ -9,7 +9,6 @@ from pathlib import Path
 
 import inquirer
 import pandas as pd
-import zope.interface
 from git import Repo
 from pydantic import Field
 
@@ -28,8 +27,9 @@ from colrev.constants import SearchType
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class SYNERGYDatasetsSearchSource:
+class SYNERGYDatasetsSearchSource(
+    colrev.package_manager.interfaces.SearchSourceInterface
+):
     """SYNERGY-datasets
 
     https://github.com/asreview/synergy-dataset

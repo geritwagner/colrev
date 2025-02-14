@@ -2,7 +2,6 @@
 """Consolidation of metadata based on the Pubmed API as a prep operation"""
 from __future__ import annotations
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -19,8 +18,7 @@ from colrev.constants import Fields
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class PubmedMetadataPrep:
+class PubmedMetadataPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records based on Pubmed metadata"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

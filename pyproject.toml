@@ -44,7 +44,6 @@ tqdm = "^4.64.1"
 GitPython= "^3.1.29"
 pre-commit = "^3.2.0"
 docker = "7.1.0"                        # required in init to determine whether Docker is available
-"zope.interface" = "7.1.0"
 pydantic = "^2.9.1"
 dictdiffer = "^0.9.0"
 imagehash = "^4.3.1"

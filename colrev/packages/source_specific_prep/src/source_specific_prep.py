@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.exceptions as colrev_exceptions
@@ -21,8 +20,7 @@ from colrev.constants import Fields
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class SourceSpecificPrep:
+class SourceSpecificPrep(colrev.package_manager.interfaces.PrepInterface):
     """Prepares records based on the prepare scripts specified by the SearchSource"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -22,8 +21,9 @@ from colrev.writer.write_utils import write_file
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.SearchSourceInterface)
-class ABIInformProQuestSearchSource:
+class ABIInformProQuestSearchSource(
+    colrev.package_manager.interfaces.SearchSourceInterface
+):
     """ABI/INFORM (ProQuest)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSourceSettings

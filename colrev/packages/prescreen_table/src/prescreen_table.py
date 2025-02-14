@@ -6,7 +6,6 @@ import csv
 from pathlib import Path
 
 import pandas as pd
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -22,8 +21,7 @@ from colrev.constants import RecordState
 # pylint: disable=duplicate-code
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrescreenInterface)
-class TablePrescreen:
+class TablePrescreen(colrev.package_manager.interfaces.PrescreenInterface):
     """Table-based prescreen (exported and imported)"""
 
     settings_class = colrev.package_manager.package_settings.DefaultSettings

@@ -2,7 +2,6 @@
 """Exclude complementary materials as a prep operation"""
 from __future__ import annotations
 
-import zope.interface
 from pydantic import Field
 
 import colrev.package_manager.interfaces
@@ -17,8 +16,9 @@ from colrev.constants import Fields
 # pylint: disable=too-few-public-methods
 
 
-@zope.interface.implementer(colrev.package_manager.interfaces.PrepInterface)
-class ExcludeComplementaryMaterialsPrep:
+class ExcludeComplementaryMaterialsPrep(
+    colrev.package_manager.interfaces.PrepInterface
+):
     """Prepares records by excluding complementary materials
     (tables of contents, editorial boards, about our authors)"""
 
