@@ -192,11 +192,12 @@ def get_colrev_id(record: colrev.record.record.Record, *, assume_complete: bool)
     return srep
 
 
-def _get_colrev_pdf_id_cpid2(pdf_path: Path) -> str:
+def _get_colrev_pdf_id_cpid2(pdf_path: Path, custom_page: int) -> str:
     with tempfile.NamedTemporaryFile(suffix=".png") as temp_file:
         file_name = temp_file.name
         try:
             doc: pymupdf.Document = pymupdf.open(pdf_path)
+            # TODO : select custom_page
             page = next(iter(doc))  # get the first page
             pix = page.get_pixmap(dpi=200)
             pix.save(file_name)  # store image as a PNG
@@ -214,7 +215,9 @@ def _get_colrev_pdf_id_cpid2(pdf_path: Path) -> str:
             raise colrev_exceptions.PDFHashError(path=pdf_path) from exc
 
 
-def get_colrev_pdf_id(pdf_path: Path, *, cpid_version: str = "cpid2") -> str:
+def get_colrev_pdf_id(
+    pdf_path: Path, *, cpid_version: str = "cpid2", custom_page: int
+) -> str:
     """Get the PDF hash"""
 
     pdf_path = pdf_path.resolve()
@@ -223,7 +226,7 @@ def get_colrev_pdf_id(pdf_path: Path, *, cpid_version: str = "cpid2") -> str:
         raise colrev_exceptions.InvalidPDFException(path=pdf_path)
 
     if cpid_version == "cpid2":
-        return _get_colrev_pdf_id_cpid2(pdf_path)
+        return _get_colrev_pdf_id_cpid2(pdf_path, custom_page=custom_page)
 
     raise NotImplementedError
 

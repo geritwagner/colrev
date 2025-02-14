@@ -547,6 +547,10 @@ class FilesSearchSource:
         self.review_manager.logger.info(f" extract metadata from {file_path}")
         try:
             if not self.review_manager.settings.is_curated_masterdata_repo():
+                # TODO : skip cover page
+                # extract _get_coverpages in colrev/packages/remove_coverpage/src/remove_cover_page.py
+                # use get_colrev_pdf_id() with custom_page = 1 (for coverpages)
+
                 # retrieve_based_on_colrev_pdf_id
                 colrev_pdf_id = colrev.record.record.Record.get_colrev_pdf_id(
                     pdf_path=file_path_abs
